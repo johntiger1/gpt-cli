@@ -10,7 +10,13 @@ openai.api_key = os.environ["OPENAI_API_KEY"]
 model_engine = "gpt-3.5-turbo"
 
 CONTENT_DICT = {"role": "user", "content": f"Produce ONLY an executable shell command for the following prompt. "
-                                    f"Do not include any explanation or natural language. The prompt will begin now."
+                                    f"Do not include any explanation or natural language. "
+                                           f"If the shell command is deemed 'dangerous', i.e. it will delete resources "
+                                           f"then please echo the command and inform the user. Otherwise, please give the "
+                                           f"executable command directly. "
+                                           f"The prompt will begin now. "
+                                           f""
+                                           f""
                                     }
 
 history = [
