@@ -3,7 +3,7 @@ import os
 import time
 import queue
 import threading
-# import keyboard
+import keyboard
 
 # Set up OpenAI API credentials
 openai.api_key = os.environ["OPENAI_API_KEY"]
@@ -61,15 +61,25 @@ def handle_user_input():
         message_queue.put(user_input)
 
 def handle_message_queue():
+    last_user_input_time = 0
     while True:
-        try:
-            user_input = message_queue.get(block=True, timeout=30)
-            prompt =  user_input
-        except queue.Empty:
+        if message_queue.qsize() > 0:
+            user_input = message_queue.get()
+            prompt = user_input
+            last_user_input_time = time.time()
+
+        elif time.time() - last_user_input_time >= 5 and not any(keyboard.is_pressed(key) for key in keyboard.all_modifiers):
             prompt = SKIP_PROMPT
+            last_user_input_time = time.time()
             print("USER_PROMPT SKIPPED")
+
+        else:
+            time.sleep(1)
+            continue
+
         response = str(generate_response(prompt))
         execute_response(response)
+
 
 if __name__ == "__main__":
 
