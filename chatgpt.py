@@ -24,7 +24,6 @@ history = [
 # Define a function to generate a response
 def generate_response(prompt):
     global history
-    pattern = "___code____"
     new_message = CONTENT_DICT
     new_message["content"] += prompt
     completion = openai.ChatCompletion.create(
