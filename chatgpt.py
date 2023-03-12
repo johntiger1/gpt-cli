@@ -15,8 +15,6 @@ CONTENT_DICT = {"role": "user", "content": f"Produce ONLY an executable shell co
                                            f"then please echo the command and inform the user. Otherwise, please give the "
                                            f"executable command directly. "
                                            f"The prompt will begin now. "
-                                           f""
-                                           f""
                                     }
 
 history = [
@@ -40,6 +38,14 @@ def generate_response(prompt):
     history = history + history[:2]
     return system_output_response
 
+def execute_response(response):
+    '''in the future, we can do zero-shot toxicity detection '''
+    print("The generated command that will be run is:\n")
+    print(response)
+    user_input = input("Execute Command?(Y/N) ")
+    if user_input.lower() == "Y":
+        os.system(response)
+    print("\n")
 
 # Get input from the user and generate a response
 while True:
@@ -49,10 +55,4 @@ while True:
     prompt = "\nUser: " + user_input
     print("\n")
     response = str(generate_response(prompt))
-    print("The generated command that will be run is:\n")
-    print(response)
-    user_input = input("Execute Command?(Y/N) ")
-
-    if user_input.lower() == "y":
-         os.system(response)
-    print("\n")
+    execute_response(response)
