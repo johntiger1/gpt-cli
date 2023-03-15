@@ -1,7 +1,5 @@
 import openai
 import os
-import re
-import subprocess
 
 # Set up OpenAI API credentials
 openai.api_key = os.environ["OPENAI_API_KEY"]
@@ -25,6 +23,8 @@ history = [
 def generate_response(prompt):
     global history
     new_message = CONTENT_DICT
+
+    # we keep passing the full user history
     new_message["content"] += prompt
     completion = openai.ChatCompletion.create(
         model="gpt-3.5-turbo",
@@ -34,6 +34,7 @@ def generate_response(prompt):
     system_output_response = completion.choices[0].message.content
     output_dict = {"role":"assistant", "content":f"{system_output_response}"}
     history.append(output_dict)
+
     history = history + history[:2]
     return system_output_response
 
@@ -41,11 +42,12 @@ def execute_response(response):
     '''in the future, we can do zero-shot toxicity detection '''
     print("The generated command that will be run is:\n")
     print(response)
-    user_input = input("Execute Command?(Y/N) ")
+    user_input = input("Execute Command?(Y/n) ")
     if user_input.lower() == "Y":
-        os.system(response)
-    print("\n")
+        code = os.system(response)
+        print("Command returned {} exit code\n".format(code))
 
+print('Welcome to shellGPT. Type "exit" to quit at any time')
 # Get input from the user and generate a response
 while True:
     user_input = input("You: ")
