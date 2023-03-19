@@ -5,11 +5,12 @@ import git
 
 # Set up OpenAI API credentials
 openai.api_key = os.environ["OPENAI_API_KEY"]
-PRODUCT_NAME = "CommitMessageGPT"
+PRODUCT_NAME = "Commit Message Generator, powered using GPT"
+PRODUCT_NAME_SHORT_FORM = "CMG-GPT"
 print(f'Welcome to {PRODUCT_NAME}. Generating your automated git message...')
 
 # Set up Git repository path and branch name
-repo_path = "./"
+repo_path = os.getcwd()
 branch_name = "master"
 
 # Connect to the Git repository
@@ -40,7 +41,7 @@ summary = openai.Completion.create(
     engine="text-davinci-003",
     prompt=f"Summarize the following Git diff output, creating a `git commit` message. Describe the changes in each file, "
            f"creating one sentence per file change. DO NOT HALLUCINATE."
-           f"Prepend `generated with {PRODUCT_NAME}` to "
+           f"Prepend `generated with {PRODUCT_NAME_SHORT_FORM}` to "
            f"start of your git commit message. Here is the git diff:"
            f"{total_payload}"
            f" ",
