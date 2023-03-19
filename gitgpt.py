@@ -6,7 +6,7 @@ import git
 # Set up OpenAI API credentials
 openai.api_key = os.environ["OPENAI_API_KEY"]
 
-print('Welcome to gitGPT.')
+print('Welcome to gitGPT. Generating your automated git message...')
 
 # Set up Git repository path and branch name
 repo_path = "./"
@@ -39,7 +39,7 @@ git commit -m "Improve error handling for invalid input"
 summary = openai.Completion.create(
     engine="text-davinci-003",
     prompt=f"Summarize the following Git diff output, creating a `git commit` message. Describe the changes in each file, "
-           f"creating one sentence per file change. "
+           f"creating one sentence per file change. DO NOT HALLUCINATE."
            f"Prepend `generated with GitGPT` to "
            f"start of your git commit message. Here is the git diff:"
            f"{total_payload}"
