@@ -8,12 +8,8 @@ import git
 # Set up OpenAI API credentials
 openai.api_key = os.environ["OPENAI_API_KEY"]
 
-
 print('Welcome to gitGPT.')
 
-
-
-# can make these config varaibles or inputtable later
 # Set up Git repository path and branch name
 repo_path = "./"
 branch_name = "master"
@@ -57,12 +53,9 @@ summary = openai.Completion.create(
     temperature=0.5,
 )["choices"][0]["text"].strip()
 
-print(summary)
-
-
-
 index = repo.index
 for file in modified_files:
     index.add([file])
 
 index.commit(summary)
+print(f"git commit -m {summary}")
