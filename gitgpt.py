@@ -80,28 +80,54 @@ repo = git.Repo(repo_path)
 # i.e.
 # os.system('git add .')
 
-status_output = subprocess.check_output(["git", "status"], cwd=repo_path).decode("utf-8")
 diff_output = subprocess.check_output(["git", "diff", "--no-color"], cwd=repo_path).decode("utf-8")
+print(diff_output)
+modified_files = [item.a_path for item in repo.index.diff(None) if item.change_type != 'D']
 
-total_payload = f'''
-git status: {status_output}
-git diff: {diff_output}
+# print(diff_output)
+total_payload = f'''{diff_output}'''
+
+
+example_git_messages = '''
+git commit -m "Fix typo in header of README.md"
+
+git commit -m "Add new feature to user profile page"
+
+git commit -m "Refactor file handling logic for improved performance"
+
+git commit -m "Update dependencies to fix security vulnerability"
+
+git commit -m "Remove unused code and files"
+
+git commit -m "Improve error handling for invalid input"
 '''
-
 
 summary = openai.Completion.create(
     engine="text-davinci-003",
-    prompt=f"Summarize the following Git information about this repo. For now, we will provide the output of "
-           f" both `git status` as "
-           f"well as `git diff`. This will enable you to pick up new files, as well as changes to existing files.  "
-           f"creating a message that describes the current changes in the repo, and which is directly "
-           f"usable for git commit -m `message`. "
-           f""
-           f":\n\n{total_payload}",
-    max_tokens=180,
+    prompt=f"Summarize the following Git diff output, creating a `git commit` message. Describe the changes in each file, "
+           f"creating one sentence per file change. "
+           f"Prepend `generated with GitGPT` to "
+           f"start of your git commit message. Here is the git diff:"
+           f"{total_payload}"
+           f" ",
+    max_tokens=100,
     n=1,
     stop=None,
     temperature=0.5,
 )["choices"][0]["text"].strip()
 
 print(summary)
+
+
+
+index = repo.index
+for file in modified_files:
+    index.add([file])
+
+# updated_files = [item.a_path for item in repo.index.diff(None) if item.change_type == 'M' and item.a_path.startswith('path/to/directory')]
+#
+# # stage only the modified files in the index
+# for file in updated_files:
+#     index.add(file)
+
+index.commit(summary)
