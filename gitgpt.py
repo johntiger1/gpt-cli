@@ -48,7 +48,7 @@ summary = openai.Completion.create(
     n=1,
     stop=None,
     temperature=0.2,
-    # presence_penalty=-1
+    presence_penalty=-1
 
 
 )["choices"][0]["text"].strip()
