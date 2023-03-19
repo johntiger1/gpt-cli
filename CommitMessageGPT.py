@@ -12,7 +12,6 @@ print(f'Welcome to {PRODUCT_NAME}. Generating your automated git message...')
 
 # Set up Git repository path and branch name
 repo_path = os.getcwd()
-print(repo_path)
 branch_name = "master"
 
 # Connect to the Git repository
