@@ -44,10 +44,13 @@ summary = openai.Completion.create(
            f"start of your git commit message. Here is the git diff:"
            f"{total_payload}"
            f" ",
-    max_tokens=100,
+    max_tokens=60,
     n=1,
     stop=None,
-    temperature=0.5,
+    temperature=0.2,
+    # presence_penalty=-1
+
+
 )["choices"][0]["text"].strip()
 
 index = repo.index
