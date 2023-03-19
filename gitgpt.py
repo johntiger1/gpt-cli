@@ -6,7 +6,7 @@ import git
 # Set up OpenAI API credentials
 openai.api_key = os.environ["OPENAI_API_KEY"]
 
-print('Welcome to gitGPT. Generating your automated git message...')
+print('Welcome to commitGPT. Generating your automated git message...')
 
 # Set up Git repository path and branch name
 repo_path = "./"
