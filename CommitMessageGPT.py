@@ -7,10 +7,12 @@ import git
 openai.api_key = os.environ["OPENAI_API_KEY"]
 PRODUCT_NAME = "Commit Message Generator, powered using GPT"
 PRODUCT_NAME_SHORT_FORM = "CMG-GPT"
+DRY_RUN = False
 print(f'Welcome to {PRODUCT_NAME}. Generating your automated git message...')
 
 # Set up Git repository path and branch name
 repo_path = os.getcwd()
+print(repo_path)
 branch_name = "master"
 
 # Connect to the Git repository
@@ -58,5 +60,7 @@ index = repo.index
 for file in modified_files:
     index.add([file])
 
-index.commit(summary)
+if not DRY_RUN:
+    index.commit(summary)
+
 print(f"git commit -m {summary}")
