@@ -39,7 +39,7 @@ git commit -m "Improve error handling for invalid input"
 
 summary = openai.Completion.create(
     engine="text-davinci-003",
-    prompt=f"Summarize the following Git diff output, creating a `git commit` message. Describe the changes in each file, "
+    prompt=f"Create a `git commit` message based on the git diff output.  Describe the changes in each file, "
            f"creating one sentence per file change. "
            # f"If there are no changes to the files, then please specify 'no changes detected'."
            f"Prepend `generated with {PRODUCT_NAME_SHORT_FORM}` to the "
