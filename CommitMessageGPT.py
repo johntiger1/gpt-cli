@@ -16,7 +16,11 @@ repo_path = os.getcwd()
 # Connect to the Git repository
 repo = git.Repo(repo_path)
 
-diff_output = subprocess.check_output(["git", "diff", "--no-color"], cwd=repo_path).decode("utf-8")
+diff_output = subprocess.check_output(["git", "diff", "--cached", "--no-color"], cwd=repo_path).decode("utf-8")
+if diff_output == '':
+    print('no git diff --cached output detected; nothing to commit')
+    exit(0)
+
 modified_files = [item.a_path for item in repo.index.diff(None) if item.change_type != 'D']
 
 # print(diff_output)
