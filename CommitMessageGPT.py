@@ -7,18 +7,30 @@ import git
 openai.api_key = os.environ["OPENAI_API_KEY"]
 PRODUCT_NAME = "Commit Message Generator, powered using GPT"
 PRODUCT_NAME_SHORT_FORM = "CMG-GPT"
-DRY_RUN = False
-print(f'Welcome to {PRODUCT_NAME}. Generating your automated git message...')
+DRY_RUN = True
+DIFF_CACHED_MODE = True
+if DIFF_CACHED_MODE:
+    CACHED_ARG = "--cached"
+else:
+    CACHED_ARG = ""
+
+
+print(f'Welcome to {PRODUCT_NAME}. Running with {CACHED_ARG} .'
+      f'Generating your automated git message...')
 
 # Set up Git repository path and branch name
 repo_path = os.getcwd()
-
+repo_path = '/Users/johnchen/src/offergenmodels'
 # Connect to the Git repository
 repo = git.Repo(repo_path)
 
-diff_output = subprocess.check_output(["git", "diff", "--cached", "--no-color"], cwd=repo_path).decode("utf-8")
+if CACHED_ARG:
+    diff_output = subprocess.check_output(["git", "diff", CACHED_ARG, "--no-color"], cwd=repo_path).decode("utf-8")
+else:
+    diff_output = subprocess.check_output(["git", "diff", "--no-color"], cwd=repo_path).decode("utf-8")
+
 if diff_output == '':
-    print('no git diff --cached output detected; nothing to commit')
+    print('no git diff output detected; nothing to commit')
     exit(0)
 
 modified_files = [item.a_path for item in repo.index.diff(None) if item.change_type != 'D']
@@ -43,11 +55,11 @@ git commit -m "Improve error handling for invalid input"
 
 summary = openai.Completion.create(
     engine="text-davinci-003",
-    prompt=f"Create a `git commit` message based on the git diff output.  Describe the changes in each file, "
-           f"creating one sentence per file change. "
+    prompt=f"Create a `git commit` message based on the git diff output. "
            # f"If there are no changes to the files, then please specify 'no changes detected'."
-           f"Prepend `generated with {PRODUCT_NAME_SHORT_FORM}` to the "
-           f"start of your git commit message. Here is the git diff:"
+           # f"Prepend `generated with {PRODUCT_NAME_SHORT_FORM}` to the "
+           # f"start of your git commit message. "
+           f"Here is the git diff:"
            f"{total_payload}"
            f" ",
     max_tokens=60,
